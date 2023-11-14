@@ -19,7 +19,7 @@ def databaze():
         )
     ''')
 
-    # Přidání záznamů o docházce
+    # Přidání nebo aktualizace záznamů o docházce
     for workday in range(1, workdays_count + 1):
         hours = HoursAtWork(selected_year, selected_month, workday, "", "")
         hours.random_time()
@@ -30,10 +30,19 @@ def databaze():
             arrival_time = hours.time_arrival
             leave_time = hours.time_leave
 
+            # Aktualizace záznamu, pokud existuje, jinak vložení nového
             cursor.execute('''
-                INSERT OR REPLACE INTO dochazka (employee_id, date, arrival_time, leave_time)
-                VALUES (?, ?, ?, ?)
-            ''', (employee_id, date, arrival_time, leave_time))
+                UPDATE dochazka
+                SET arrival_time = ?, leave_time = ?
+                WHERE employee_id = ? AND date = ?
+            ''', (arrival_time, leave_time, employee_id, date))
+
+            if cursor.rowcount == 0:
+                # Žádný záznam nebyl aktualizován, takže vložíme nový
+                cursor.execute('''
+                    INSERT INTO dochazka (employee_id, date, arrival_time, leave_time)
+                    VALUES (?, ?, ?, ?)
+                ''', (employee_id, date, arrival_time, leave_time))
 
     # Uložení změn a uzavření spojení s databází
     conn.commit()
