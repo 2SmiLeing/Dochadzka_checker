@@ -47,3 +47,28 @@ def databaze():
     # Uložení změn a uzavření spojení s databází
     conn.commit()
     conn.close()
+
+def combine_data():
+    conn = sqlite3.connect('dochazka.db')
+    cursor = conn.cursor()
+
+    # Získání údajů z databáze
+    cursor.execute('''
+        SELECT employee_id, date, arrival_time, leave_time
+        FROM dochazka
+    ''')
+    records = cursor.fetchall()
+
+    # Načtení zaměstnanců ze souboru
+    employees = load_employees()
+    #print("Loaded employees:", employees)
+
+    # Spojení údajů z JSON a databáze pomocí ID zaměstnance
+    for record in records:
+        employee_id = str(record[0])  # Převést employee_id na řetězec
+        date, arrival_time, leave_time = record[1:]
+        if employee_id in employees:
+            employee_name = employees[employee_id]
+            print(f"Employee: {employee_name}, Date: {date}, Arrival Time: {arrival_time}, Leave Time: {leave_time}")
+
+    conn.close()
