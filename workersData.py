@@ -22,11 +22,11 @@ def databaze():
     # Přidání nebo aktualizace záznamů o docházce
     for workday in range(1, workdays_count + 1):
         hours = HoursAtWork(selected_year, selected_month, workday, "", "")
-        hours.random_time()
         generated_hours.append(hours)
 
         for employee_id, employee_name in employees.items():
             date = f"{selected_year}-{selected_month:02d}-{workday:02d}"
+            hours.random_time()
             arrival_time = hours.time_arrival
             leave_time = hours.time_leave
 
