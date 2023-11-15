@@ -1,6 +1,6 @@
 import sqlite3
 from employees import *
-from workdays import workdays_count
+from workdays import workdays_count, days_in_month
 from time_arrival_leave import *
 from datetime import datetime
 
@@ -18,7 +18,7 @@ def databaze():
         )
     ''')
 
-    for workday in range(1, workdays_count + 1):
+    for workday in range(1, days_in_month + 1):
         # Kontrola, zda je den v pracovním týdnu (pondělí až pátek)
         current_date = datetime(selected_year, selected_month, workday)
         if current_date.weekday() < 5:
