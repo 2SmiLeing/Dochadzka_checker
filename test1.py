@@ -1,40 +1,16 @@
-import sqlite3
-from employees import *
-from workdays import workdays_count
-from time_arrival_leave import *
+import random
+import calendar
 
-def databaze():
-    # Vytvoření nebo připojení k databázi
-    conn = sqlite3.connect('dochazka.db')
-    cursor = conn.cursor()
+available_times = ["05:40", "13:40", "21:40"]
+selected_time = ""
+n = 0
 
-    # Vytvoření tabulky pro docházku, pokud neexistuje
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS dochazka (
-            id INTEGER PRIMARY KEY,
-            employee_id INTEGER,
-            date DATE,
-            arrival_time TIME,
-            leave_time TIME
-        )
-    ''')
-
-    # Přidání záznamů o docházce
-    for workday in range(1, workdays_count + 1):
-        hours = HoursAtWork(selected_year, selected_month, workday, "", "")
-        hours.random_time()
-        generated_hours.append(hours)
-
-        for employee_id, employee_name in employees.items():
-            date = f"{selected_year}-{selected_month:02d}-{workday:02d}"
-            arrival_time = hours.time_arrival
-            leave_time = hours.time_leave
-
-            cursor.execute('''
-                INSERT OR REPLACE INTO dochazka (employee_id, date, arrival_time, leave_time)
-                VALUES (?, ?, ?, ?)
-            ''', (employee_id, date, arrival_time, leave_time))
-
-    # Uložení změn a uzavření spojení s databází
-    conn.commit()
-    conn.close()
+if 0 <= calendar.weekday(year, month, day) <= 4:
+    if day in range(1, 7):
+        selected_time = available_times[n]
+    elif day in range(7, 15):
+        selected_time = available_times[n+1]
+    elif day in range(15,22):
+        selected_time = available_times[n+2]
+    else:
+        selected_time = available_times[n]
