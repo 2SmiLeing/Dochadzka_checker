@@ -16,7 +16,7 @@ class HoursAtWork:
         
     def random_time(self):    
         available_times = ["05:40", "13:40", "21:40"]
-        selected_time = random.choice(available_times)
+        selected_time = start_times()
         random_minutes = random.randint(0, 25)
         random_datetime = datetime.datetime.strptime(selected_time, "%H:%M") + datetime.timedelta(minutes=random_minutes)
         
