@@ -2,6 +2,7 @@ import datetime
 import random
 from workdays import selected_year, selected_month
 import calendar
+from start_times import start_times
 
 year = selected_year
 month = selected_month
@@ -34,6 +35,7 @@ workdays = [day for day in range(1, days_in_month + 1) if 0 <= calendar.weekday(
 generated_hours = []
 for workday in workdays:
     hours = HoursAtWork(year, month, workday, "", "")
+    day1 = workday
     hours.random_time()
     generated_hours.append(hours)
 
