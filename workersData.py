@@ -119,7 +119,7 @@ def combine_data():
                 INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
                 VALUES (?, ?, ?, ?, ?)
             ''', (employee_id, employee_name, date, arrival_time, leave_time))
-            
+
             result = random_time()
             arrival_time = result["time_arrival"]
             leave_time = result["time_leave"]
@@ -143,22 +143,32 @@ def start_times():
     conn_dochazka = sqlite3.connect('dochazka.db')
     cursor_dochazka = conn_dochazka.cursor()
 
-    # Získání údajů z databáze
-    cursor_dochazka.execute('''
-    SELECT employee_id, date, arrival_time, leave_time
-    FROM dochazka
-    ''')
+    try:
+        # Získání údajů z databáze
+        cursor_dochazka.execute('''
+        SELECT employee_id, date, arrival_time, leave_time
+        FROM dochazka
+        ''')
 
-    rows_from_database = cursor_dochazka.fetchall()
+        rows_from_database = cursor_dochazka.fetchall()
 
-    for row in rows_from_database:
-        employee_id, date_str, arrival_time, leave_time = row
-        formatted_date = datetime.strptime(date_str, "%Y-%m-%d")
-        actual_day = formatted_date.day
+        processed_employee_dates = set()
 
-        #print(f"Employee ID: {employee_id}, Date: {date_str}, Day of Month: {actual_day}")
+        for row in rows_from_database:
+            employee_id, date_str, arrival_time, leave_time = row
+            formatted_date = datetime.strptime(date_str, "%Y-%m-%d")
+            if (employee_id, formatted_date) not in processed_employee_dates and formatted_date.weekday() < 5:
+                actual_day = formatted_date.day
 
-    conn_dochazka.close()
+                print(f"Employee ID: {employee_id}, Date: {date_str}, Day of Month: {actual_day}")
+
+                processed_employee_dates.add((employee_id, formatted_date))
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        conn_dochazka.close()
        
 
     with open('employees.json', 'r') as file:
