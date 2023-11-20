@@ -1,11 +1,11 @@
 import sqlite3
 
 # Připojení k databázi
-conn = sqlite3.connect('dochazka.db')
+conn = sqlite3.connect('MonthAttendance.db')
 cursor = conn.cursor()
 
 # Výběr všech dat z tabulky "dochazka"
-cursor.execute("SELECT * FROM dochazka")
+cursor.execute("SELECT * FROM attendance")
 rows = cursor.fetchall()
 
 # Vypsání dat
