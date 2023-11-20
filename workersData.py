@@ -84,6 +84,11 @@ def databaze():
 
 
 def combine_data():
+
+    available_times = ["05:40", "13:40", "21:40"]
+    selected_time = ""           
+    actual_day = None
+    
     conn_dochazka = sqlite3.connect('dochazka.db')
     cursor_dochazka = conn_dochazka.cursor()
 
@@ -109,128 +114,93 @@ def combine_data():
         )
     ''')
 
+    with open('employees.json', 'r') as file:
+        employees = json.load(file)
+
+    processed_employee_dates = set()
+
     for record in records:
         employee_id = str(record[0])
         date, arrival_time, leave_time = record[1:]
         if employee_id in employees:
             employee_name = employees[employee_id]
+
+            formatted_date = datetime.strptime(date, "%Y-%m-%d")
+
+            if (employee_id, formatted_date) not in processed_employee_dates and formatted_date.weekday() < 5:
+                #print(formatted_date)
+                actual_day = formatted_date.day
+                #print(actual_day)
+                #print(f"Employee ID: {employee_id}, Date: {date}, Day of Month: {actual_day}")
+
+                processed_employee_dates.add((employee_id, formatted_date))
+            
+                employee_id = int(employee_id)        
+                if employee_id is not None:                                                   
+                    if 1 <= actual_day <=7:
+                        if employee_id % 2 == 0:
+                            selected_time = available_times[0]
+                        elif employee_id % 3 == 0:
+                            selected_time = available_times[1]
+                        elif employee_id % 5 == 0:
+                            selected_time = available_times[2]
+                        else:
+                            selected_time = available_times[1] 
+
+                    elif 8 <= actual_day <=14:
+                        if employee_id % 2 == 0:
+                            selected_time = available_times[1]
+                        elif employee_id % 3 == 0:
+                            selected_time = available_times[2]
+                        elif employee_id % 5 == 0:
+                            selected_time = available_times[0]
+                        else:
+                            selected_time = available_times[2]
+
+                    elif 15 <= actual_day <=21:
+                        if employee_id % 2 == 0:
+                            selected_time = available_times[2]
+                        elif employee_id % 3 == 0:
+                            selected_time = available_times[0]
+                        elif employee_id % 5 == 0:
+                            selected_time = available_times[1]
+                        else:
+                            selected_time = available_times[0]
+
+                    elif 22 <= actual_day:
+                        if employee_id % 2 == 0:
+                            selected_time = available_times[0]
+                        elif employee_id % 3 == 0:
+                            selected_time = available_times[1]
+                        elif employee_id % 5 == 0:
+                            selected_time = available_times[2]
+                        elif employee_id % 7 == 0 and employee_id % 3 != 0:
+                            selected_time = available_times[1]    
+                        else: 
+                            selected_time = available_times[2]
+            
+                    random_minutes = random.randint(0, 25)
+                    random_datetime = datetime.strptime(selected_time, "%H:%M") + timedelta(minutes=random_minutes)
+                    arrival_time = random_datetime.strftime(f"{selected_year}:{selected_month}:{actual_day}:%H:%M")    
+
+                    random_minutes1 = random.randint(-5, 10)        
+                    leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}:{selected_month}:{actual_day}:%H:%M")
+                                                            
+
+
+            
         
-            cursor_month_attendance.execute('''
-                INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (employee_id, employee_name, date, arrival_time, leave_time))
+                    cursor_month_attendance.execute('''
+                        INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (employee_id, employee_name, date, arrival_time, leave_time))            
 
-            result = random_time()
-            arrival_time = result["time_arrival"]
-            leave_time = result["time_leave"]
-
-            cursor_month_attendance.execute('''
-                UPDATE attendance
-                SET arrival_time = ?, leave_time = ?
-                WHERE employee_id = ? AND date = ?
-            ''', (arrival_time, leave_time, employee_id, date))
+                    cursor_month_attendance.execute('''
+                        UPDATE attendance
+                        SET arrival_time = ?, leave_time = ?
+                        WHERE employee_id = ? AND date = ?
+                    ''', (arrival_time, leave_time, employee_id, date))
 
     conn_month_attendance.commit()
     conn_month_attendance.close()
     conn_dochazka.close()
-
-def start_times():
-        
-    available_times = ["05:40", "13:40", "21:40"]
-    selected_time = ""           
-    actual_day = None
-
-    conn_dochazka = sqlite3.connect('dochazka.db')
-    cursor_dochazka = conn_dochazka.cursor()
-
-    try:
-        # Získání údajů z databáze
-        cursor_dochazka.execute('''
-        SELECT employee_id, date, arrival_time, leave_time
-        FROM dochazka
-        ''')
-
-        rows_from_database = cursor_dochazka.fetchall()
-
-        processed_employee_dates = set()
-
-        for row in rows_from_database:
-            employee_id, date_str, arrival_time, leave_time = row
-            formatted_date = datetime.strptime(date_str, "%Y-%m-%d")
-            if (employee_id, formatted_date) not in processed_employee_dates and formatted_date.weekday() < 5:
-                actual_day = formatted_date.day
-
-                print(f"Employee ID: {employee_id}, Date: {date_str}, Day of Month: {actual_day}")
-
-                processed_employee_dates.add((employee_id, formatted_date))
-
-    except Exception as e:
-        print(f"Error: {e}")
-
-    finally:
-        conn_dochazka.close()
-       
-
-    with open('employees.json', 'r') as file:
-        employees = json.load(file)
-    
-    for key in employees:
-        employee_id = int(key)
-                          
-        if employee_id is not None:
-            if 0 <= calendar.weekday(selected_year, selected_month, actual_day) <= 4:
-
-                if 1 <= actual_day <=7:
-                    if employee_id % 2 == 0:
-                        selected_time = available_times[0]
-                    elif employee_id % 3 == 0:
-                        selected_time = available_times[1]
-                    elif employee_id % 5 == 0:
-                        selected_time = available_times[2]
-                    else:
-                        selected_time = available_times[1] 
-
-                elif 8 <= actual_day <=14:
-                    if employee_id % 2 == 0:
-                        selected_time = available_times[1]
-                    elif employee_id % 3 == 0:
-                        selected_time = available_times[2]
-                    elif employee_id % 5 == 0:
-                        selected_time = available_times[0]
-                    else:
-                        selected_time = available_times[2]
-
-                elif 15 <= actual_day <=21:
-                    if employee_id % 2 == 0:
-                        selected_time = available_times[2]
-                    elif employee_id % 3 == 0:
-                        selected_time = available_times[0]
-                    elif employee_id % 5 == 0:
-                        selected_time = available_times[1]
-                    else:
-                        selected_time = available_times[0]
-
-                elif 22 <= actual_day:
-                    if employee_id % 2 == 0:
-                        selected_time = available_times[0]
-                    elif employee_id % 3 == 0:
-                        selected_time = available_times[1]
-                    elif employee_id % 5 == 0:
-                        selected_time = available_times[2]
-                    elif employee_id % 7 == 0 and employee_id % 3 != 0:
-                        selected_time = available_times[1]    
-                    else: 
-                        selected_time = available_times[2]                    
-
-    return selected_time
-
-def random_time():    
-    
-    random_minutes = random.randint(0, 25)
-    random_datetime = datetime.strptime(start_times(), "%H:%M") + timedelta(minutes=random_minutes)
-    time_arrival = random_datetime.strftime(f"{selected_year}:{selected_month}:{day}:%H:%M")    
-
-    random_minutes1 = random.randint(-5, 10)        
-    time_leave = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}:{selected_month}:{day}:%H:%M")
-
-    return {"time_arrival": time_arrival, "time_leave": time_leave}
