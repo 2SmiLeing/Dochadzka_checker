@@ -16,24 +16,23 @@ def hours_checker():
             ''')
     
     workers_data = cursor.fetchall()
+    overtime = {}
 
     for worker_data in workers_data:
         employee_id = str(worker_data[0])
         employee_name = worker_data[1]
         date = worker_data[2]
-        arrival_time = worker_data[3]
-        leave_time = worker_data[4]
+        arrival_time = datetime.strptime(worker_data[3], '%Y-%m-%d %H:%M')
+        leave_time = datetime.strptime(worker_data[4], '%Y-%m-%d %H:%M')
 
-        print(date)
-        print(arrival_time)
-        print(leave_time)
+        working_time = (leave_time - arrival_time).total_seconds() / 60
+        difference_minutes = working_time - 480
+        overtime[date] = max(0, difference_minutes)
 
+        if difference_minutes < 0:
+            print(f"Pre {date}: Chýbajú {abs(difference_minutes)} minúty.") 
 
-        #print(employee_id)
-        #print(employee_name)
-
-
-
+    return overtime
 
 hours_checker()
 
