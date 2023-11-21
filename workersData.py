@@ -181,10 +181,14 @@ def combine_data():
             
                     random_minutes = random.randint(0, 25)
                     random_datetime = datetime.strptime(selected_time, "%H:%M") + timedelta(minutes=random_minutes)
-                    arrival_time = random_datetime.strftime(f"{selected_year}:{selected_month}:{actual_day}:%H:%M")    
+                    arrival_time = random_datetime.strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")    
 
-                    random_minutes1 = random.randint(-5, 10)        
-                    leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}:{selected_month}:{actual_day}:%H:%M")
+                    random_minutes1 = random.randint(-5, 10)
+                    if available_times[2]:
+                        actual_day += 1
+                        leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
+                    else:
+                        leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
                                                             
 
 
