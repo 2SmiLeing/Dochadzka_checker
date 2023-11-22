@@ -22,19 +22,30 @@ def hours_checker():
         employee_id = str(worker_data[0])
         employee_name = worker_data[1]
         date = worker_data[2]
-        arrival_time = datetime.strptime(worker_data[3], '%Y-%m-%d %H:%M')
-        leave_time = datetime.strptime(worker_data[4], '%Y-%m-%d %H:%M')
+        arrival_time_str = worker_data[3]
+        leave_time_str = worker_data[4]
+
+        print("-------------------------------------------")
+        print(f"Processing data for {employee_name}, date: {date}, arrival: {arrival_time_str}, leave: {leave_time_str}")
+
+        arrival_time = datetime.strptime(arrival_time_str, '%Y-%m-%d %H:%M')
+        leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M')
 
         working_time = (leave_time - arrival_time).total_seconds() / 60
         difference_minutes = working_time - 480
         overtime[date] = max(0, difference_minutes)
 
         if difference_minutes < 0:
-            print(f"Pre {date}: Chýbajú {abs(difference_minutes)} minúty.") 
+            print(f"For {date}: Missing {abs(difference_minutes)} minutes.")
+            print("-------------------------------------------")            
 
-    return overtime
+        elif difference_minutes > 0:
+            print(f"For {date}: Overtime {abs(difference_minutes)} minutes.")
+            print("-------------------------------------------")
 
-hours_checker()
+        else:
+            print(f"For {date}: Worked 8 hours, all OK ")
+            print("-------------------------------------------")
 
         
 
