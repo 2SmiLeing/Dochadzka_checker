@@ -17,7 +17,7 @@ def hours_checker():
             ''')
     
     workers_data = cursor.fetchall()
-    overtime = {}
+    #overtime = {}
     overtime_minutes = 0
 
     for worker_data in workers_data:
@@ -35,21 +35,19 @@ def hours_checker():
 
         working_time = (leave_time - arrival_time).total_seconds() / 60
         difference_minutes = working_time - 480
-        overtime[date] = max(0, difference_minutes)
+        #overtime[date] = max(0, difference_minutes)
 
         if difference_minutes < 0:
             print(f"For {date}: Missing {abs(difference_minutes)} minutes.")
             print("-------------------------------------------")
             overtime_minutes -= difference_minutes            
 
-        elif difference_minutes > 0:
+        elif difference_minutes >= 0:
             print(f"For {date}: Overtime {abs(difference_minutes)} minutes.")
             print("-------------------------------------------")
             overtime_minutes += difference_minutes
 
-        else:
-            print(f"For {date}: Worked 8 hours, all OK ")
-            print("-------------------------------------------")
+        
         
     print(f"For {selected_year} year and {selected_month} month: Worker {employee_name} whit ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
 
