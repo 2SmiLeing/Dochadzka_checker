@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime, timedelta
+from workersData import selected_year, selected_month
 
 def hours_checker():
 
@@ -17,6 +18,7 @@ def hours_checker():
     
     workers_data = cursor.fetchall()
     overtime = {}
+    overtime_minutes = 0
 
     for worker_data in workers_data:
         employee_id = str(worker_data[0])
@@ -37,15 +39,21 @@ def hours_checker():
 
         if difference_minutes < 0:
             print(f"For {date}: Missing {abs(difference_minutes)} minutes.")
-            print("-------------------------------------------")            
+            print("-------------------------------------------")
+            overtime_minutes -= difference_minutes            
 
         elif difference_minutes > 0:
             print(f"For {date}: Overtime {abs(difference_minutes)} minutes.")
             print("-------------------------------------------")
+            overtime_minutes += difference_minutes
 
         else:
             print(f"For {date}: Worked 8 hours, all OK ")
             print("-------------------------------------------")
+        
+    print(f"For {selected_year} year and {selected_month} month: Worker {employee_name} whit ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
+
+hours_checker()
 
         
 
