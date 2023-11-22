@@ -13,8 +13,10 @@ def input_year_month():
             print("Neplatný vstup. Rok musí byť štvorciferné celé číslo a mesiac musí byť dvojciferné celé číslo medzi 1 a 12.")
         else:
             return int(year_input), int(month_input)
-
+        
+global selected_year, selected_month
 selected_year, selected_month = input_year_month()
+
 
 _, days_in_month = calendar.monthrange(selected_year, selected_month)
 workdays_count = 0
@@ -85,6 +87,8 @@ def databaze():
 
 def combine_data():
 
+    global selected_year, selected_month
+
     available_times = ["05:40", "13:40", "21:40"]
     selected_time = ""           
     actual_day = None
@@ -114,6 +118,7 @@ def combine_data():
         )
     ''')
 
+    import json
     with open('employees.json', 'r') as file:
         employees = json.load(file)
 
@@ -184,17 +189,27 @@ def combine_data():
                     arrival_time = random_datetime.strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")    
 
                     random_minutes1 = random.randint(-5, 10)
-                    if available_times[2]:
+
+                    if selected_time == available_times[2]:
                         actual_day += 1
                         leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
+                        
+                        if actual_day > calendar.monthrange(selected_year, selected_month)[1]:
+
+                            if selected_month == 12:
+                                selected_year += 1
+                                selected_month = 1
+                                actual_day = 1
+                            else:
+                                selected_month += 1
+                                actual_day = 1
+
+                        
                     else:
                         leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
                                                             
 
-
-            
-        
-                    cursor_month_attendance.execute('''
+                        cursor_month_attendance.execute('''
                         INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
                         VALUES (?, ?, ?, ?, ?)
                     ''', (employee_id, employee_name, date, arrival_time, leave_time))            
