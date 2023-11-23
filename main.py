@@ -25,6 +25,8 @@ new_employee()
 from workersData import *
 databaze()
 combine_data()
+from hours_checker import *
+
 
 
 
