@@ -22,7 +22,7 @@ employees = load_employees()
 
 #Add new employee:
 def new_employee():
-    name = input("Vlozte Mena zamestnancov. \nPre ukoncenie zadajte'koniec'. \n\nZadajte meno zamestnanca: ").title()
+    name = input("Vlozte Mena zamestnancov. \nPre ukoncenie zadajte 'koniec'. \n\nZadajte meno zamestnanca: ").title()
     print("\n")
     print_with_delay("\n-------------------------------------------\n", 0.01)
     # Clear dict. employees:
