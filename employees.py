@@ -16,17 +16,20 @@ employees = load_employees()
 
 #Add new employee:
 def new_employee():
-    name = input("Please input full Name:").title()
+    name = input("Pre ukoncenie zadajte'koniec' \nZadajte meno zamestnanca: ").title()
+    print("\n")
     # Clear dict. employees:
     if name.lower() == "delete":
         global employees
         employees = {}
         save_employees(employees)
         print("Employees cleared.")
+        print("\n")
         new_employee()
     #Terminate running terminal:
-    elif name.lower() == "kill":
+    elif name.lower() == "koniec":
         print("Program terminated.")
+        print("\n")
         print(employees)
         return 
     else:
@@ -37,6 +40,10 @@ def new_employee():
             #New emoloyee:
             new_key = 1001
         employees[new_key] = name
-        print(f"New employee added with number {new_key}.")
+        print(f"Novy zamestnanec pridany s ID: {new_key}.")
+        print("\n")
         save_employees(employees)
+        print(employees)
+        print("\n")
         new_employee()
+
