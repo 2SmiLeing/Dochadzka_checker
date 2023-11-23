@@ -91,6 +91,7 @@ def hours_checker():
 
     print("\n\n")
     print_with_delay(f"For {selected_year} year and {selected_month} month: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
+    print("\n\n")
 
 hours_checker()
 
