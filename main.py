@@ -2,7 +2,6 @@ import time
 from employees import *
 
 
-
 def print_with_delay(text, delay=0.02):
         for char in text:
             time.sleep(delay)
@@ -21,11 +20,8 @@ def start():
     print_with_delay(centered_welcome_text)
     print("\n")
     
-    
-
-
-
-
-
 start()
 new_employee()
+
+from workersData import *
+databaze()
