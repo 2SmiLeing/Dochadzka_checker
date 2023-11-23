@@ -13,7 +13,7 @@ def print_with_delay(text, delay=0.02):
 
 def input_year_month():
     while True:
-        text = ("*" * 25 + "Zadajte rok a mesiac, pre ktory chcete zistit ochadzku" + "*" * 25)
+        text = ("*" * 25 + "Zadajte rok a mesiac, pre ktory chcete vygenerovat dochadzku" + "*" * 25)
         centered_text = text.center(width)
         print_with_delay(centered_text)
         print("\n")
@@ -233,5 +233,7 @@ def combine_data():
     conn_month_attendance.commit()
     conn_month_attendance.close()
     conn_dochazka.close()
+
+
 
 
