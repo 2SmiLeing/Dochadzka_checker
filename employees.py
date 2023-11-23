@@ -16,7 +16,7 @@ employees = load_employees()
 
 #Add new employee:
 def new_employee():
-    name = input("Pre ukoncenie zadajte'koniec' \nZadajte meno zamestnanca: ").title()
+    name = input("Vlozte Mena zamestnancov. \nPre ukoncenie zadajte'koniec'. \n\nZadajte meno zamestnanca: ").title()
     print("\n")
     # Clear dict. employees:
     if name.lower() == "delete":
@@ -31,6 +31,7 @@ def new_employee():
         print("Program terminated.")
         print("\n")
         print(employees)
+        print("\n")
         return 
     else:
         #Check dict. employees:
@@ -46,4 +47,5 @@ def new_employee():
         print(employees)
         print("\n")
         new_employee()
+
 
