@@ -18,7 +18,8 @@ def input_year_month():
     
     while True:
         year_input = input("Zadajte rok: ")
-        month_input = input("Zadajte mesiac: ")        
+        month_input = input("Zadajte mesiac: ")
+        print_with_delay("\n-------------------------------------------\n", 0.01)        
 
         if len(year_input) != 4 or not year_input.isdigit() or not month_input.isdigit() or not 1 <= int(month_input) <= 12:
             print("Neplatný vstup. Rok musí byť štvorciferné celé číslo a mesiac musí byť dvojciferné celé číslo medzi 1 a 12.")
@@ -42,8 +43,7 @@ def hours_checker():
     
     workers_data = cursor.fetchall()
 
-    overtime_minutes = 0
-    name_or_id = input("Zadajte meno alebo ID zamestnanca: ").lower()
+    name_or_id = input("Zadajte meno alebo ID zamestnanca: ").title()
 
     filtered_data = []
 
@@ -58,14 +58,16 @@ def hours_checker():
             if data_year == selected_year and data_month == selected_month:
                 filtered_data.append(worker_data)
 
+    overtime_minutes = 0
+
     for worker_data in filtered_data:
         employee_id, employee_name = str(worker_data[0]), worker_data[1]
         date = worker_data[2]
         arrival_time_str = worker_data[3]
         leave_time_str = worker_data[4]
 
-        print("-------------------------------------------")
-        print(f"ID: {employee_id}, Meno: {employee_name}, Dátum: {date}, Príchod: {arrival_time_str}, Odchod: {leave_time_str}")
+        print_with_delay("\n-------------------------------------------\n", 0.01)
+        print_with_delay(f"ID: {employee_id}, Meno: {employee_name}, Dátum: {date}, Príchod: {arrival_time_str}, Odchod: {leave_time_str}")
         time.sleep(0.01)
         
         arrival_time = datetime.strptime(arrival_time_str, '%Y-%m-%d %H:%M')
@@ -76,15 +78,15 @@ def hours_checker():
 
         if difference_minutes < 0:
             print(f"For {date}: Missing {abs(difference_minutes)} minutes.")
-            print("-------------------------------------------")
+            print_with_delay("\n-------------------------------------------\n", 0.01)
             overtime_minutes -= difference_minutes            
 
         elif difference_minutes >= 0:
             print(f"For {date}: Overtime {abs(difference_minutes)} minutes.")
-            print("-------------------------------------------")
+            print_with_delay("\n-------------------------------------------\n", 0.01)
             overtime_minutes += difference_minutes
 
-    print(f"For {selected_year} year and {selected_month} month: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
+    print_with_delay(f"For {selected_year} year and {selected_month} month: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
 
 hours_checker()
 
