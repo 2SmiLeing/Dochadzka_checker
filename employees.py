@@ -1,4 +1,10 @@
 import json
+import time
+
+def print_with_delay(text, delay=0.02):
+    for char in text:
+        time.sleep(delay)
+        print(char, end='', flush=True)
 
 #Save dict. employees:
 def save_employees(data):
@@ -18,17 +24,18 @@ employees = load_employees()
 def new_employee():
     name = input("Vlozte Mena zamestnancov. \nPre ukoncenie zadajte'koniec'. \n\nZadajte meno zamestnanca: ").title()
     print("\n")
+    print_with_delay("\n-------------------------------------------\n", 0.01)
     # Clear dict. employees:
     if name.lower() == "delete":
         global employees
         employees = {}
         save_employees(employees)
-        print("Employees cleared.")
+        print_with_delay("Employees cleared.")
         print("\n")
         new_employee()
     #Terminate running terminal:
     elif name.lower() == "koniec":
-        print("Program terminated.")
+        print_with_delay("Program terminated.")
         print("\n")
         print(employees)
         print("\n")
@@ -41,7 +48,7 @@ def new_employee():
             #New emoloyee:
             new_key = 1001
         employees[new_key] = name
-        print(f"Novy zamestnanec pridany s ID: {new_key}.")
+        print_with_delay(f"Novy zamestnanec pridany s ID: {new_key}.")
         print("\n")
         save_employees(employees)
         print(employees)
