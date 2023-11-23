@@ -3,9 +3,20 @@ from employees import *
 from datetime import datetime, timedelta
 import calendar
 import random
+import time
+
+width = 140
+def print_with_delay(text, delay=0.02):
+        for char in text:
+            time.sleep(delay)
+            print(char, end='', flush=True)
 
 def input_year_month():
     while True:
+        text = ("*" * 25 + "Zadajte rok a mesiac, pre ktory chcete zistit ochadzku" + "*" * 25)
+        centered_text = text.center(width)
+        print_with_delay(centered_text)
+        print("\n")
         year_input = input("Zadajte rok: ")
         month_input = input("Zadajte mesiac: ")
 
@@ -14,7 +25,6 @@ def input_year_month():
         else:
             return int(year_input), int(month_input)
         
-global selected_year, selected_month
 selected_year, selected_month = input_year_month()
 
 
@@ -223,3 +233,5 @@ def combine_data():
     conn_month_attendance.commit()
     conn_month_attendance.close()
     conn_dochazka.close()
+
+
