@@ -77,14 +77,14 @@ def hours_checker():
         difference_minutes = working_time - 480
 
         if difference_minutes < 0:
-            print(f"For {date}: Missing {abs(difference_minutes)} minutes.")
+            print_with_delay(f" {date}: Missing {abs(difference_minutes)} minutes.")
             print_with_delay("\n-------------------------------------------\n", 0.01)
             overtime_minutes += difference_minutes
             print_with_delay(f"Overtime: {overtime_minutes}")
             
 
         elif difference_minutes >= 0:
-            print(f"For {date}: Overtime {abs(difference_minutes)} minutes.")
+            print_with_delay(f" {date}: Overtime {abs(difference_minutes)} minutes.")
             print_with_delay("\n-------------------------------------------\n", 0.01)
             overtime_minutes += difference_minutes
             print_with_delay(f"Overtime: {overtime_minutes}")
@@ -93,7 +93,6 @@ def hours_checker():
     print_with_delay(f"For {selected_year} year and {selected_month} month: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
 
 hours_checker()
-
 
 
         
