@@ -42,7 +42,7 @@ def hours_checker():
     ''')
     
     workers_data = cursor.fetchall()
-
+    print("\n")
     name_or_id = input("Zadajte meno alebo ID zamestnanca: ").title()
 
     filtered_data = []
@@ -90,7 +90,7 @@ def hours_checker():
             print_with_delay(f"Overtime: {overtime_minutes}")
 
     print("\n\n")
-    print_with_delay(f"For {selected_year} year and {selected_month} month: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
+    print_with_delay(f"For year {selected_year} and month {selected_month}: Worker {employee_name} with ID {employee_id} have {overtime_minutes} minutes overtime/missing. ")
     print("\n\n")
 
 hours_checker()
