@@ -13,7 +13,7 @@ def print_with_delay(text, delay=0.02):
 
 def input_year_month():
     while True:
-        text = ("*" * 25 + "Zadajte rok a mesiac, pre ktory chcete vygenerovat dochadzku" + "*" * 25)
+        text = ("*" * 25 + "  Zadajte rok a mesiac, pre ktory chcete vygenerovat dochadzku  " + "*" * 25)
         centered_text = text.center(width)
         print_with_delay(centered_text)
         print("\n")
@@ -101,7 +101,7 @@ def combine_data():
 
     available_times = ["05:40", "13:40", "21:40"]
     selected_time = ""           
-    actual_day = None
+    
     
     conn_dochazka = sqlite3.connect('dochazka.db')
     cursor_dochazka = conn_dochazka.cursor()
@@ -135,6 +135,7 @@ def combine_data():
     processed_employee_dates = set()
 
     for record in records:
+        actual_day = None
         employee_id = str(record[0])
         date, arrival_time, leave_time = record[1:]
         if employee_id in employees:
@@ -152,47 +153,49 @@ def combine_data():
             
                 employee_id = int(employee_id)        
                 if employee_id is not None:                                                   
-                    if 1 <= actual_day <=7:
-                        if employee_id % 2 == 0:
+                    if 1 <= actual_day <= 7:
+                        if 1000 < employee_id <= 1003:
                             selected_time = available_times[0]
-                        elif employee_id % 3 == 0:
+                        elif 1003 < employee_id <= 1006: 
                             selected_time = available_times[1]
-                        elif employee_id % 5 == 0:
+                        elif 1006 < employee_id <= 1009:
                             selected_time = available_times[2]
                         else:
-                            selected_time = available_times[1] 
+                            selected_time = available_times[0]   
+                        
 
-                    elif 8 <= actual_day <=14:
-                        if employee_id % 2 == 0:
+                    elif 8 <= actual_day <= 14:
+                        if 1000 < employee_id <= 1003:
                             selected_time = available_times[1]
-                        elif employee_id % 3 == 0:
+                        elif 1003 < employee_id <= 1006: 
                             selected_time = available_times[2]
-                        elif employee_id % 5 == 0:
+                        elif 1006 < employee_id <= 1009:
                             selected_time = available_times[0]
                         else:
-                            selected_time = available_times[2]
+                            selected_time = available_times[1]
+                        
 
-                    elif 15 <= actual_day <=21:
-                        if employee_id % 2 == 0:
+                    elif 15 <= actual_day <= 21:
+                        if 1000 < employee_id <= 1003:
                             selected_time = available_times[2]
-                        elif employee_id % 3 == 0:
+                        elif 1003 < employee_id <= 1006: 
                             selected_time = available_times[0]
-                        elif employee_id % 5 == 0:
+                        elif 1006 < employee_id <= 1009:
                             selected_time = available_times[1]
                         else:
-                            selected_time = available_times[0]
+                            selected_time = available_times[2]
+                        
 
                     elif 22 <= actual_day:
-                        if employee_id % 2 == 0:
+                        if 1000 < employee_id <= 1003:
                             selected_time = available_times[0]
-                        elif employee_id % 3 == 0:
+                        elif 1003 < employee_id <= 1006: 
                             selected_time = available_times[1]
-                        elif employee_id % 5 == 0:
+                        elif 1006 < employee_id <= 1009:
                             selected_time = available_times[2]
-                        elif employee_id % 7 == 0 and employee_id % 3 != 0:
-                            selected_time = available_times[1]    
-                        else: 
-                            selected_time = available_times[2]
+                        else:
+                            selected_time = available_times[0]
+                       
             
                     random_minutes = random.randint(0, 25)
                     random_datetime = datetime.strptime(selected_time, "%H:%M") + timedelta(minutes=random_minutes)
@@ -205,23 +208,25 @@ def combine_data():
                         leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
                         
                         if actual_day > calendar.monthrange(selected_year, selected_month)[1]:
-
+                            
                             if selected_month == 12:
                                 selected_year += 1
                                 selected_month = 1
                                 actual_day = 1
+                                leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
                             else:
                                 selected_month += 1
                                 actual_day = 1
+                                leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
 
                         
                     else:
                         leave_time = (random_datetime + timedelta(hours=8, minutes=random_minutes1)).strftime(f"{selected_year}-{selected_month:02d}-{actual_day:02d} %H:%M")
                                                             
 
-                        cursor_month_attendance.execute('''
-                        INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
-                        VALUES (?, ?, ?, ?, ?)
+                    cursor_month_attendance.execute('''
+                    INSERT OR IGNORE INTO attendance (employee_id, employee_name, date, arrival_time, leave_time)
+                    VALUES (?, ?, ?, ?, ?)
                     ''', (employee_id, employee_name, date, arrival_time, leave_time))            
 
                     cursor_month_attendance.execute('''
@@ -229,6 +234,8 @@ def combine_data():
                         SET arrival_time = ?, leave_time = ?
                         WHERE employee_id = ? AND date = ?
                     ''', (arrival_time, leave_time, employee_id, date))
+
+    #print(selected_time, "test")
 
     conn_month_attendance.commit()
     conn_month_attendance.close()
