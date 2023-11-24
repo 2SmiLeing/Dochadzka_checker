@@ -68,10 +68,10 @@ def hours_checker():
 
         print_with_delay("\n-------------------------------------------\n", 0.01)
         print_with_delay(f"ID: {employee_id}, Meno: {employee_name}, Dátum: {date}, Príchod: {arrival_time_str}, Odchod: {leave_time_str}")
-        time.sleep(0.01)
+        time.sleep(0.01)  
         
         arrival_time = datetime.strptime(arrival_time_str, '%Y-%m-%d %H:%M')
-        leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M')
+        leave_time = datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M') or datetime.strptime(leave_time_str, '%Y-%m-%d %H:%M') + timedelta(days=1)
 
         working_time = (leave_time - arrival_time).total_seconds() / 60
         difference_minutes = working_time - 480
